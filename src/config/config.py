@@ -18,11 +18,11 @@ class Config:
     MODEL_DIR = os.path.join(BASE_DIR, "model_data")
 
     # Flask API配置
-    DEBUG = True if os.getenv("CC_FLASK_DEBUG", "0") == "1" else False
+    DEBUG = bool(os.getenv("CC_FLASK_DEBUG", "0") == "1")
     TIMEZONE = "Asia/Shanghai"
     HOST = os.getenv("CC_HOST", "127.0.0.1")
-    HTTP_PORT = os.getenv("CC_HTTP_PORT", 8060)
-    WORKERS = os.getenv("CC_WORKERS", 1)
+    HTTP_PORT = int(os.getenv("CC_HTTP_PORT", "8060"))
+    WORKERS = int(os.getenv("CC_WORKERS", "1"))
     AUTH_KEY = os.getenv("CC_AUTH_KEY", "123456")
 
     # 数据库配置
@@ -36,11 +36,15 @@ class Config:
     }
 
     # 分发配置，目标支持：ding[钉钉]、wecom[企业微信]、tg[Telegram] 等等
-    # 目前仅支持钉钉
-    SENDER_LIST = ["ding"]
-    # 钉钉 URL，如果 SENDER_LIST 包含 ding ，CC_D_TOKEN 配置就必须填写
+    # 目前支持 钉钉、企业微信
+    SENDER_LIST = ["ding", "wecom"]
+    # 钉钉分发器参数配置，如果 SENDER_LIST 包含 ding ，CC_D_TOKEN 配置就必须填写
     # 申请钉钉TOKEN时候，关键字必须带有 [2c]
-    DD_URL = f"https://oapi.dingtalk.com/robot/send?access_token={os.getenv('CC_D_TOKEN', '')}"
+    DD_TOKEN = os.getenv("CC_D_TOKEN", "")
+    # 企业微信配置
+    WECOM_ID = os.getenv("CC_WECOM_ID", "")
+    WECOM_AGENT_ID = int(os.getenv("CC_WECOM_AGENT_ID", ""))
+    WECOM_SECRET = os.getenv("CC_WECOM_SECRET", "")
 
     # 订阅的公众号配置
     WECHAT_LIST = [
@@ -56,6 +60,6 @@ class Config:
         "stormzhang",
     ]
 
-
-if __name__ == "__main__":
-    print(Config.RSS_DICT.keys())
+    # 模型配置
+    # 余弦相似度阈值
+    COS_VALUE = float(os.getenv("CC_COS_VALUE", "0.65"))
